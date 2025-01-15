@@ -18,28 +18,20 @@ export const CartProvider = ({ children }) => {
     });
   };
 
-  const removeFromCart = (itemId, removeItem = false) => {
-    setCartItems((prevItems) => {
-      if (removeItem) {
-        return prevItems.filter((i) => i.id !== itemId);
-      }
-      const existingItem = prevItems.find((i) => i.id === itemId);
-      if (existingItem && existingItem.quantity > 1) {
-        return prevItems.map((i) =>
-          i.id === itemId ? { ...i, quantity: i.quantity - 1 } : i
-        );
-      }
-      return prevItems.filter((i) => i.id !== itemId);
-    });
+  const removeFromCart = (itemId) => {
+    setCartItems((prevItems) => prevItems.filter((i) => i.id !== itemId));
   };
 
-  // New function to update quantity
   const updateQuantity = (itemId, newQuantity) => {
-    setCartItems((prevItems) =>
-      prevItems.map((i) =>
+    setCartItems((prevItems) => {
+      if (newQuantity <= 0) {
+        // Remove the item if quantity is zero or less
+        return prevItems.filter((i) => i.id !== itemId);
+      }
+      return prevItems.map((i) =>
         i.id === itemId ? { ...i, quantity: newQuantity } : i
-      )
-    );
+      );
+    });
   };
 
   return (
